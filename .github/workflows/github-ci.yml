@@ -13,6 +13,12 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: 3.8
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@13d241b293754004c80624b5567555c4a39ffbe3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: 'us-east-1'
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -20,11 +26,3 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       - name: Build and Deploy
         run: sam build && sam deploy
-        env:
-            TEMPLATE: 'template.yaml'
-            AWS_STACK_NAME: sam-app
-            AWS_REGION: 'us-east-1'
-            AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-            AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-            AWS_BUCKET_PREFIX: sam-app
-            PARAMETER_OVERRIDES: tableName=\"lambda_async_results\""
